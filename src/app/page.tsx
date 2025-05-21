@@ -1,7 +1,12 @@
-import Image from "next/image";
+import {
+  ThemeToggle
 
+} from "@/components/theme-toggle";
 export default function Home() {
   return (
-    <div>Coin Trace</div>
+    <>
+      <div>Coin Trace</div>
+      <ThemeToggle />
+    </>
   );
 }
