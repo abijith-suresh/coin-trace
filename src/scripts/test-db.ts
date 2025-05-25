@@ -18,7 +18,7 @@ async function testDatabase() {
       userId: testUserId,
       symbol: 'BTC',
       name: 'Bitcoin',
-      amount: 1.5,
+      amount: '1.5',
     });
     console.log('Added cryptocurrency:', newCrypto);
 
@@ -30,7 +30,7 @@ async function testDatabase() {
     // Test updating a cryptocurrency
     console.log('\n3. Updating cryptocurrency...');
     const updatedCrypto = await updateUserCryptocurrency(newCrypto[0].id, {
-      amount: 2.0,
+      amount: '2.0',
     });
     console.log('Updated cryptocurrency:', updatedCrypto);
 
