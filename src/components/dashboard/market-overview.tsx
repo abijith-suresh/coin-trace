@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { TrendingUp, TrendingDown, Activity, DollarSign } from 'lucide-react';
-import { formatCurrency, formatPercentage, getPercentageColor } from '@/lib/utils/format';
+import { formatPercentage, getPercentageColor } from '@/lib/utils/format';
 
 interface MarketOverviewProps {
   data: {
