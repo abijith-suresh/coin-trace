@@ -6,7 +6,7 @@ import { UserButton } from '@clerk/nextjs';
 
 export default function DashboardNavbar() {
   return (
-    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+    <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 px-4">
       <div className="container flex h-16 items-center justify-between">
         <Link href="/dashboard" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
           <Activity className="h-8 w-8 text-blue-500" />
