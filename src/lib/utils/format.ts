@@ -1,18 +1,25 @@
-export function formatCurrency(amount: number, currency: string = 'USD'): string {
+/**
+ * Format a number as currency in USD
+ */
+export function formatCurrency(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: currency,
+    currency: 'USD',
     minimumFractionDigits: 2,
-    maximumFractionDigits: amount >= 1 ? 2 : 8,
-  }).format(amount);
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
-export function formatPercentage(percentage: number): string {
+/**
+ * Format a number as a percentage
+ */
+export function formatPercentage(value: number): string {
   return new Intl.NumberFormat('en-US', {
     style: 'percent',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  }).format(percentage / 100);
+    signDisplay: 'always',
+  }).format(value / 100);
 }
 
 export function formatNumber(num: number): string {
@@ -35,10 +42,11 @@ export function formatMarketCap(marketCap: number): string {
   return formatCurrency(marketCap).replace(/\.\d{2}/, '') + formatNumber(marketCap).slice(-1);
 }
 
-export function getPercentageColor(percentage: number): string {
-  if (percentage > 0) return 'text-green-500';
-  if (percentage < 0) return 'text-red-500';
-  return 'text-muted-foreground';
+/**
+ * Get the CSS color class based on percentage value
+ */
+export function getPercentageColor(value: number): string {
+  return value >= 0 ? 'text-green-500' : 'text-red-500';
 }
 
 export function getPercentageIcon(percentage: number): '↗' | '↘' | '→' {

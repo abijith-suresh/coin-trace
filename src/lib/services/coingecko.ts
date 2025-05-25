@@ -1,3 +1,5 @@
+import { Cache } from '@/lib/utils/cache';
+
 export interface CoinData {
   id: string;
   symbol: string;
@@ -32,6 +34,14 @@ class CoinGeckoService {
   private baseUrl = process.env.NEXT_PUBLIC_COINGECKO_API_URL || 'https://api.coingecko.com/api/v3';
   private apiKey = process.env.COINGECKO_API_KEY;
 
+  // Cache TTLs (in seconds)
+  private readonly CACHE_TTL = {
+    COIN_DATA: 60, // 1 minute
+    MARKET_DATA: 60, // 1 minute
+    SEARCH_RESULTS: 300, // 5 minutes
+    GLOBAL_DATA: 300, // 5 minutes
+  };
+
   private async makeRequest(endpoint: string, params: URLSearchParams = new URLSearchParams()) {
     const url = new URL(`${this.baseUrl}${endpoint}`);
     url.search = params.toString();
@@ -63,6 +73,10 @@ class CoinGeckoService {
   }
 
   async getTopCoins(limit: number = 50, currency: string = 'usd'): Promise<CoinData[]> {
+    const cacheKey = `top_coins_${limit}_${currency}`;
+    const cachedData = Cache.get<CoinData[]>(cacheKey);
+    if (cachedData) return cachedData;
+
     const params = new URLSearchParams({
       vs_currency: currency,
       order: 'market_cap_desc',
@@ -72,10 +86,16 @@ class CoinGeckoService {
       price_change_percentage: '24h,7d',
     });
 
-    return await this.makeRequest('/coins/markets', params);
+    const data = await this.makeRequest('/coins/markets', params);
+    Cache.set(cacheKey, data, { ttl: this.CACHE_TTL.MARKET_DATA });
+    return data;
   }
 
   async getCoinById(id: string, currency: string = 'usd'): Promise<CoinData> {
+    const cacheKey = `coin_${id}_${currency}`;
+    const cachedData = Cache.get<CoinData>(cacheKey);
+    if (cachedData) return cachedData;
+
     const params = new URLSearchParams({
       vs_currency: currency,
       include_market_cap: 'true',
@@ -87,7 +107,7 @@ class CoinGeckoService {
     const data = await this.makeRequest(`/coins/${id}`, params);
 
     // Transform the detailed coin data to match our CoinData interface
-    return {
+    const transformedData: CoinData = {
       id: data.id,
       symbol: data.symbol,
       name: data.name,
@@ -109,15 +129,45 @@ class CoinGeckoService {
       atl_date: data.market_data.atl_date[currency],
       last_updated: data.last_updated,
     };
+
+    Cache.set(cacheKey, transformedData, { ttl: this.CACHE_TTL.COIN_DATA });
+    return transformedData;
   }
 
-  async searchCoins(query: string): Promise<Array<{id: string; name: string; symbol: string; thumb: string}>> {
+  async searchCoins(query: string): Promise<CoinData[]> {
+    const cacheKey = `search_${query.toLowerCase()}`;
+    const cachedData = Cache.get<CoinData[]>(cacheKey);
+    if (cachedData) return cachedData;
+
     const params = new URLSearchParams({
-      query: query,
+      vs_currency: 'usd',
+      order: 'market_cap_desc',
+      per_page: '10',
+      sparkline: 'false',
+      ids: '',
     });
 
-    const data = await this.makeRequest('/search', params);
-    return data.coins || [];
+    try {
+      // First search for coins by name/symbol
+      const searchResponse = await fetch(`${this.baseUrl}/search?query=${encodeURIComponent(query)}`);
+      const searchData = await searchResponse.json();
+
+      // Get the top 10 coin IDs from search results
+      const coinIds = searchData.coins
+        .slice(0, 10)
+        .map((coin: any) => coin.id)
+        .join(',');
+
+      // Then get detailed market data for these coins
+      const marketDataResponse = await fetch(`${this.baseUrl}/coins/markets?${params}&ids=${coinIds}`);
+      const marketData = await marketDataResponse.json();
+
+      Cache.set(cacheKey, marketData, { ttl: this.CACHE_TTL.SEARCH_RESULTS });
+      return marketData;
+    } catch (error) {
+      console.error('Failed to search coins:', error);
+      return [];
+    }
   }
 
   async getGlobalMarketData(): Promise<{
@@ -126,13 +176,20 @@ class CoinGeckoService {
     total_volume: number;
     market_cap_change_percentage_24h: number;
   }> {
+    const cacheKey = 'global_market_data';
+    const cachedData = Cache.get<any>(cacheKey);
+    if (cachedData) return cachedData;
+
     const data = await this.makeRequest('/global');
-    return {
+    const transformedData = {
       active_cryptocurrencies: data.data.active_cryptocurrencies,
       total_market_cap: data.data.total_market_cap.usd,
       total_volume: data.data.total_volume.usd,
       market_cap_change_percentage_24h: data.data.market_cap_change_percentage_24h_usd,
     };
+
+    Cache.set(cacheKey, transformedData, { ttl: this.CACHE_TTL.GLOBAL_DATA });
+    return transformedData;
   }
 }
 
