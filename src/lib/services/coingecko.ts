@@ -62,13 +62,30 @@ class CoinGeckoService {
       });
 
       if (!response.ok) {
-        throw new Error(`CoinGecko API error: ${response.status} ${response.statusText}`);
+        if (response.status === 429) {
+          // Rate limit exceeded
+          console.warn('CoinGecko API rate limit exceeded. Consider upgrading to a paid plan.');
+          throw new Error('Rate limit exceeded. Please try again later.');
+        }
+
+        if (response.status === 403) {
+          console.error('CoinGecko API access forbidden. Please check your API key.');
+          throw new Error('API access forbidden. Please check your API key.');
+        }
+
+        const errorText = await response.text();
+        console.error(`CoinGecko API error (${response.status}):`, errorText);
+        throw new Error(`CoinGecko API error: ${response.status} - ${errorText || response.statusText}`);
       }
 
       return await response.json();
     } catch (error) {
+      if (error instanceof Error) {
+        console.error('CoinGecko API request failed:', error.message);
+        throw new Error(`Failed to fetch cryptocurrency data: ${error.message}`);
+      }
       console.error('CoinGecko API request failed:', error);
-      throw error;
+      throw new Error('Failed to fetch cryptocurrency data. Please try again later.');
     }
   }
 
