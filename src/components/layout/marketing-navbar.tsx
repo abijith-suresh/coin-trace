@@ -23,12 +23,6 @@ export default function MarketingNavbar() {
           >
             Features
           </Link>
-          <Link
-            href="#pricing"
-            className="text-sm font-medium hover:text-blue-500 transition-colors"
-          >
-            Pricing
-          </Link>
 
           <SignInButton mode="modal">
             <Button variant="outline" size="sm">
