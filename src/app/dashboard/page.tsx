@@ -1,7 +1,43 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { TrendingUp, Wallet, Bell, BarChart3 } from 'lucide-react';
+import { TrendingUp } from 'lucide-react';
+import { coinGeckoService } from '@/lib/services/coingecko';
+import MarketOverview from '@/components/dashboard/market-overview';
+import TopCoins from '@/components/dashboard/top-coins';
+import { MarketOverviewSkeleton, TopCoinsSkeleton } from '@/components/dashboard/loading-skeletons';
+import { Suspense } from 'react';
+
+async function GlobalMarketData() {
+  try {
+    const globalData = await coinGeckoService.getGlobalMarketData();
+    return <MarketOverview data={globalData} />;
+  } catch (error) {
+    console.error('Failed to fetch global market data:', error);
+    return (
+      <div className="text-center py-4">
+        <p className="text-muted-foreground">
+          Unable to load global market data. Please try again later.
+        </p>
+      </div>
+    );
+  }
+}
+
+async function TopCoinsData() {
+  try {
+    const topCoins = await coinGeckoService.getTopCoins(10);
+    return <TopCoins coins={topCoins} />;
+  } catch (error) {
+    console.error('Failed to fetch top coins data:', error);
+    return (
+      <div className="text-center py-4">
+        <p className="text-muted-foreground">
+          Unable to load cryptocurrency data. Please try again later.
+        </p>
+      </div>
+    );
+  }
+}
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -20,7 +56,7 @@ export default async function DashboardPage() {
             Welcome back, {user?.firstName || 'Trader'}!
           </h1>
           <p className="text-muted-foreground">
-            Here's your cryptocurrency portfolio overview
+            Here's your cryptocurrency portfolio overview and market insights
           </p>
         </div>
         <Badge variant="secondary" className="text-sm">
@@ -29,92 +65,21 @@ export default async function DashboardPage() {
         </Badge>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Portfolio</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">$0.00</div>
-            <p className="text-xs text-muted-foreground">
-              Start by adding your first coin
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Alerts</CardTitle>
-            <Bell className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">
-              No active price alerts
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tracked Coins</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">
-              Add coins to start tracking
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">24h Change</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">--</div>
-            <p className="text-xs text-muted-foreground">
-              No data available
-            </p>
-          </CardContent>
-        </Card>
+      {/* Market Overview */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Global Market Overview</h2>
+        <Suspense fallback={<MarketOverviewSkeleton />}>
+          <GlobalMarketData />
+        </Suspense>
       </div>
 
-      {/* Getting Started */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Getting Started</CardTitle>
-          <CardDescription>
-            Welcome to Coin Trace! Here's how to get started with tracking your cryptocurrency portfolio.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2">1. Add Your First Coin</h3>
-              <p className="text-sm text-muted-foreground">
-                Search and add cryptocurrencies to start building your portfolio.
-              </p>
-            </div>
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2">2. Set Price Alerts</h3>
-              <p className="text-sm text-muted-foreground">
-                Get notified when your coins reach target prices.
-              </p>
-            </div>
-            <div className="p-4 border rounded-lg">
-              <h3 className="font-semibold mb-2">3. Track Performance</h3>
-              <p className="text-sm text-muted-foreground">
-                Monitor your portfolio's performance with detailed analytics.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Top Cryptocurrencies */}
+      <div>
+        <h2 className="text-xl font-semibold mb-4">Market Leaders</h2>
+        <Suspense fallback={<TopCoinsSkeleton />}>
+          <TopCoinsData />
+        </Suspense>
+      </div>
     </div>
   );
 }
