@@ -27,11 +27,6 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="#pricing" className="hover:text-foreground transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
                 <Link href="/api-docs" className="hover:text-foreground transition-colors">
                   API Docs
                 </Link>
