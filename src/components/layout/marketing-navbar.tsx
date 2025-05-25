@@ -18,7 +18,7 @@ export default function MarketingNavbar() {
 
         <div className="hidden md:flex items-center space-x-6">
           <Link
-            href="#features"
+            href="/#features"
             className="text-sm font-medium hover:text-blue-500 transition-colors"
           >
             Features
