@@ -1,44 +1,56 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   TrendingUp,
   Shield,
   Bell,
   BarChart3,
   Smartphone,
-  Globe
-} from 'lucide-react';
+  Globe,
+} from "lucide-react";
 
 const features = [
   {
     icon: <TrendingUp className="h-8 w-8 text-blue-500" />,
-    title: "Real-Time Tracking",
-    description: "Monitor cryptocurrency prices and market movements with live data updates every second."
+    title: "Live Market Data",
+    description:
+      "Fetches real-time cryptocurrency data using the CoinGecko API — no delays, no noise.",
   },
   {
     icon: <Shield className="h-8 w-8 text-green-500" />,
-    title: "Secure Portfolio",
-    description: "Your portfolio data is encrypted and secured with enterprise-grade security protocols."
+    title: "Built-in Watchlist",
+    description:
+      "Keep track of your favorite coins in a simple, fast, and local-first watchlist interface.",
   },
   {
     icon: <Bell className="h-8 w-8 text-orange-500" />,
-    title: "Smart Alerts",
-    description: "Get instant notifications when your favorite coins hit target prices or show significant movements."
+    title: "Smart Alerts (Coming Soon)",
+    description:
+      "Get notified when selected cryptocurrencies hit your custom price thresholds.",
   },
   {
     icon: <BarChart3 className="h-8 w-8 text-purple-500" />,
-    title: "Advanced Analytics",
-    description: "Deep dive into market trends with professional-grade charts and technical indicators."
+    title: "Minimalist Interface",
+    description:
+      "Clean, distraction-free design that puts the data front and center — perfect for developers and curious minds.",
   },
   {
     icon: <Smartphone className="h-8 w-8 text-pink-500" />,
-    title: "Mobile Ready",
-    description: "Access your portfolio and market data seamlessly across all your devices."
+    title: "Fully Responsive",
+    description:
+      "Works beautifully on all screen sizes with mobile-first responsive design via Tailwind CSS.",
   },
   {
     icon: <Globe className="h-8 w-8 text-cyan-500" />,
-    title: "Global Markets",
-    description: "Track over 10,000+ cryptocurrencies from exchanges worldwide in real-time."
-  }
+    title: "Global Coverage",
+    description:
+      "Track over 10,000 cryptocurrencies from around the world — straight from CoinGecko.",
+  },
 ];
 
 export default function FeaturesSection() {
@@ -46,9 +58,13 @@ export default function FeaturesSection() {
     <section id="features" className="py-20 px-4 bg-muted/30">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold mb-4">Everything You Need to Succeed</h2>
+          <h2 className="text-4xl font-bold mb-4">
+            A Simple Crypto Tracker, Built for Fun
+          </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            From beginners to professional traders, our platform provides the tools and insights you need.
+            Coin Trace was created as a personal project to explore crypto data
+            and web development. Here’s what it currently offers — and what’s
+            coming next.
           </p>
         </div>
 

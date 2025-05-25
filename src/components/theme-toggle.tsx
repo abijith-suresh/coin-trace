@@ -16,8 +16,16 @@ export function ThemeToggle() {
   if (!mounted) return null;
 
   return (
-    <Button onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
-      {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+    <Button
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      variant="ghost"
+      className="transition-colors duration-200 hover:bg-blue-100 dark:hover:bg-blue-900"
+    >
+      {theme === 'dark' ? (
+        <Sun className="w-4 h-4 text-yellow-500 transition-transform duration-200 hover:scale-110" />
+      ) : (
+        <Moon className="w-4 h-4 text-blue-500 transition-transform duration-200 hover:scale-110" />
+      )}
     </Button>
   );
 }
