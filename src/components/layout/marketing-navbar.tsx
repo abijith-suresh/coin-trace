@@ -25,12 +25,19 @@ export default function MarketingNavbar() {
           </Link>
 
           <SignInButton mode="modal">
-            <Button variant="outline" size="sm">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white dark:text-white dark:border-white dark:hover:bg-gray-200 dark:hover:text-blue-800 transition-all duration-300"
+            >
               Sign In
             </Button>
           </SignInButton>
           <SignUpButton mode="modal">
-            <Button size="sm">
+            <Button
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-lg dark:bg-blue-700 dark:hover:bg-blue-800"
+            >
               Get Started
             </Button>
           </SignUpButton>
