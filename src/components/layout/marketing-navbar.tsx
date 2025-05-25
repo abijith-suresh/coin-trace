@@ -1,9 +1,13 @@
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Activity } from 'lucide-react';
-import Link from 'next/link';
 import { ThemeToggle } from '../theme-toggle';
+import {
+  SignInButton,
+  SignUpButton,
+} from '@clerk/nextjs';
 
-export default function Navbar() {
+export default function MarketingNavbar() {
   return (
     <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="container flex h-16 items-center justify-between">
@@ -37,21 +41,29 @@ export default function Navbar() {
           >
             Terms
           </Link>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/signin">Sign In</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link href="/signup">Get Started</Link>
-          </Button>
+
+          <SignInButton mode="modal">
+            <Button variant="outline" size="sm">
+              Sign In
+            </Button>
+          </SignInButton>
+          <SignUpButton mode="modal">
+            <Button size="sm">
+              Get Started
+            </Button>
+          </SignUpButton>
+
           <ThemeToggle />
         </div>
 
-        {/* Mobile menu button - you can implement mobile menu later */}
+        {/* Mobile menu */}
         <div className="md:hidden flex items-center space-x-2">
+          <SignInButton mode="modal">
+            <Button variant="outline" size="sm">
+              Sign In
+            </Button>
+          </SignInButton>
           <ThemeToggle />
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/signin">Sign In</Link>
-          </Button>
         </div>
       </div>
     </nav>
