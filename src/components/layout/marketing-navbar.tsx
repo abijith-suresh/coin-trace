@@ -29,18 +29,6 @@ export default function MarketingNavbar() {
           >
             Pricing
           </Link>
-          <Link
-            href="/privacy-policy"
-            className="text-sm font-medium hover:text-blue-500 transition-colors"
-          >
-            Privacy
-          </Link>
-          <Link
-            href="/terms-of-service"
-            className="text-sm font-medium hover:text-blue-500 transition-colors"
-          >
-            Terms
-          </Link>
 
           <SignInButton mode="modal">
             <Button variant="outline" size="sm">
